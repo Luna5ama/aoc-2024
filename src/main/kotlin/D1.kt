@@ -1,28 +1,44 @@
 import kotlin.math.abs
 
 fun main() {
-    fun p1() {
-        val inputP1 = readInput("D1P1.txt")
+    run {
+        val input = readInput("D1.txt")
         val leftNums = mutableListOf<Int>()
         val rightNums = mutableListOf<Int>()
-        val nums = inputP1.lineSequence()
+        input.lineSequence()
             .filter { it.isNotBlank() }
             .map { line ->
-                line.splitToSequence("   ").map { intStr -> intStr.toInt() }.toList()
-            }.toList()
-        nums.forEach { it ->
-            leftNums.add(it[0])
-            rightNums.add(it[1])
-        }
+                line.splitToSequence("   ").map { it.toInt() }.toList()
+            }.forEach {
+                leftNums.add(it[0])
+                rightNums.add(it[1])
+            }
         leftNums.sort()
         rightNums.sort()
-        var totalDistance = 0
-        (leftNums zip rightNums).forEach { (left, right) ->
-            totalDistance += abs(right - left)
+        val totalDistance = (leftNums zip rightNums).sumOf { (left, right) ->
+            abs(right - left)
         }
+        println("Part 1:")
         println(totalDistance)
     }
 
-    println("Part 1:")
-    p1()
+    run {
+        val inputP1 = readInput("D1.txt")
+        val leftNums = mutableListOf<Int>()
+        val rightNumCounts = mutableMapOf<Int, Int>()
+        inputP1.lineSequence()
+            .filter { it.isNotBlank() }
+            .map { line ->
+                line.splitToSequence("   ").map { it.toInt() }.toList()
+            }.forEach {
+                leftNums.add(it[0])
+                rightNumCounts[it[1]] = rightNumCounts.getOrDefault(it[1], 0) + 1
+            }
+
+        val totalSimilarityScore = leftNums.sumOf { left ->
+            left * rightNumCounts.getOrDefault(left, 0)
+        }
+        println("Part 2:")
+        println(totalSimilarityScore)
+    }
 }
