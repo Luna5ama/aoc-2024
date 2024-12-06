@@ -13,7 +13,6 @@ fun main() {
     run {
         val input = readInput("D2.txt")
         val safeCount = input.lineSequence()
-            .filter { it.isNotBlank() }
             .map { line ->
                 line.splitToSequence(" ").map { it.toInt() }.toList()
             }.count { row ->
@@ -27,7 +26,6 @@ fun main() {
     run {
         val input = readInput("D2.txt")
         val safeCount = input.lineSequence()
-            .filter { it.isNotBlank() }
             .map { line ->
                 line.splitToSequence(" ").map { it.toInt() }.toList()
             }

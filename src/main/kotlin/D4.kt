@@ -1,5 +1,5 @@
 fun main() {
-    val input = readInput("D4.txt").lines().filter { it.isNotBlank() }
+    val input = readInput("D4.txt").lines()
     val rows = input.size
     val cols = input[0].length
     val xRange = 0..<cols

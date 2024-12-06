@@ -6,7 +6,6 @@ fun main() {
         val leftNums = mutableListOf<Int>()
         val rightNums = mutableListOf<Int>()
         input.lineSequence()
-            .filter { it.isNotBlank() }
             .map { line ->
                 line.splitToSequence("   ").map { it.toInt() }.toList()
             }.forEach {
@@ -27,7 +26,6 @@ fun main() {
         val leftNums = mutableListOf<Int>()
         val rightNumCounts = mutableMapOf<Int, Int>()
         inputP1.lineSequence()
-            .filter { it.isNotBlank() }
             .map { line ->
                 line.splitToSequence("   ").map { it.toInt() }.toList()
             }.forEach {
