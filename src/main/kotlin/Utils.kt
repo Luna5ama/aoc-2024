@@ -46,6 +46,16 @@ class CharMatrix(val data: Array<CharArray>) {
         data[v.y][v.x] = value
     }
 
+    fun withXY(): Sequence<XYValue> {
+        return sequence {
+            for (y in yRange) {
+                for (x in xRange) {
+                    yield(XYValue(IntVec2(x, y), data[y][x]))
+                }
+            }
+        }
+    }
+
     fun flatten(): Sequence<Char> {
         return sequence {
             for (y in yRange) {
@@ -59,6 +69,8 @@ class CharMatrix(val data: Array<CharArray>) {
     fun copy(): CharMatrix {
         return CharMatrix(Array(rows) { y -> data[y].copyOf() })
     }
+
+    data class XYValue(val xy: IntVec2, val value: Char)
 }
 
 class IntMatrix(val data: Array<IntArray>) {
@@ -94,6 +106,16 @@ class IntMatrix(val data: Array<IntArray>) {
         data[v.y][v.x] = value
     }
 
+    fun withXY(): Sequence<XYValue> {
+        return sequence {
+            for (y in yRange) {
+                for (x in xRange) {
+                    yield(XYValue(IntVec2(x, y), data[y][x]))
+                }
+            }
+        }
+    }
+
     fun flatten(): Sequence<Int> {
         return sequence {
             for (y in yRange) {
@@ -107,6 +129,8 @@ class IntMatrix(val data: Array<IntArray>) {
     fun copy(): IntMatrix {
         return IntMatrix(Array(rows) { y -> data[y].copyOf() })
     }
+
+    data class XYValue(val xy: IntVec2, val value: Int)
 }
 
 fun String.toCharMatrix(): CharMatrix {
