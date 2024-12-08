@@ -1,4 +1,5 @@
 import java.io.File
+import kotlin.math.abs
 
 fun readInput(fileName: String): String {
     return File("inputs/$fileName").readText().trimEnd('\n')
@@ -25,12 +26,34 @@ class CharMatrix(val data: Array<CharArray>) {
         return x in xRange && y in yRange
     }
 
+    fun checkBounds(v: IntVec2): Boolean {
+        return v.x in xRange && v.y in yRange
+    }
+
     operator fun get(x: Int, y: Int): Char {
         return data[y][x]
     }
 
+    operator fun get(v: IntVec2): Char {
+        return data[v.y][v.x]
+    }
+
     operator fun set(x: Int, y: Int, value: Char) {
         data[y][x] = value
+    }
+
+    operator fun set(v: IntVec2, value: Char) {
+        data[v.y][v.x] = value
+    }
+
+    fun flatten(): Sequence<Char> {
+        return sequence {
+            for (y in yRange) {
+                for (x in xRange) {
+                    yield(data[y][x])
+                }
+            }
+        }
     }
 
     fun copy(): CharMatrix {
@@ -51,12 +74,34 @@ class IntMatrix(val data: Array<IntArray>) {
         return x in xRange && y in yRange
     }
 
+    fun checkBounds(v: IntVec2): Boolean {
+        return v.x in xRange && v.y in yRange
+    }
+
     operator fun get(x: Int, y: Int): Int {
         return data[y][x]
     }
 
+    operator fun get(v: IntVec2): Int {
+        return data[v.y][v.x]
+    }
+
     operator fun set(x: Int, y: Int, value: Int) {
         data[y][x] = value
+    }
+
+    operator fun set(v: IntVec2, value: Int) {
+        data[v.y][v.x] = value
+    }
+
+    fun flatten(): Sequence<Int> {
+        return sequence {
+            for (y in yRange) {
+                for (x in xRange) {
+                    yield(data[y][x])
+                }
+            }
+        }
     }
 
     fun copy(): IntMatrix {
@@ -70,3 +115,41 @@ fun String.toCharMatrix(): CharMatrix {
     val cols = lines[0].length
     return CharMatrix(Array(rows) { y -> CharArray(cols) { x -> lines[y][x] } })
 }
+
+fun <T> List<T>.cartesianProduct(n: Int): Sequence<List<T>> {
+    return if (n == 0) {
+        sequenceOf(emptyList())
+    } else {
+        val indices = IntArray(n)
+        sequence {
+            while (true) {
+                yield(indices.map { this@cartesianProduct[it] })
+                var i = 0
+                while (i < n && indices[i] == size - 1) {
+                    indices[i] = 0
+                    i++
+                }
+                if (i == n) break
+                indices[i]++
+            }
+        }
+    }
+}
+
+data class IntVec2(val x: Int, val y: Int) {
+    operator fun plus(other: IntVec2) = IntVec2(x + other.x, y + other.y)
+    operator fun plus(other: Int) = IntVec2(x + other, y + other)
+    operator fun minus(other: IntVec2) = IntVec2(x - other.x, y - other.y)
+    operator fun minus(other: Int) = IntVec2(x - other, y - other)
+    operator fun times(scalar: Int) = IntVec2(x * scalar, y * scalar)
+    operator fun times(other: IntVec2) = IntVec2(x * other.x, y * other.y)
+    operator fun div(scalar: Int) = IntVec2(x / scalar, y / scalar)
+    operator fun div(other: IntVec2) = IntVec2(x / other.x, y / other.y)
+    operator fun unaryMinus() = IntVec2(-x, -y)
+    fun manhattan() = abs(x) + abs(y)
+}
+
+fun Int.plus(other: IntVec2) = IntVec2(this + other.x, this + other.y)
+fun Int.minus(other: IntVec2) = IntVec2(this - other.x, this - other.y)
+fun Int.times(other: IntVec2) = IntVec2(this * other.x, this * other.y)
+fun Int.div(other: IntVec2) = IntVec2(this / other.x, this / other.y)
