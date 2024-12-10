@@ -11,6 +11,7 @@ enum class Direction4(val dx: Int, val dy: Int, val oppositeIndex: Int, val bitM
     DOWN(0, 1, 0, 0b0100),
     LEFT(-1, 0, 1, 0b1000);
 
+    val vec = IntVec2(dx, dy)
     val opposite get() = entries[oppositeIndex]
     val right get() = entries[(ordinal + 1) % 4]
     val left get() = entries[(ordinal + 3) % 4]
