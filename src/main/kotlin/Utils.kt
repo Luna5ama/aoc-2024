@@ -17,118 +17,177 @@ enum class Direction4(val dx: Int, val dy: Int, val oppositeIndex: Int, val bitM
     val left get() = entries[(ordinal + 3) % 4]
 }
 
-class CharMatrix(val data: Array<CharArray>) {
-    val rows = data.size
-    val cols = data[0].size
-    val xRange = 0 until cols
-    val yRange = 0 until rows
+class CharMatrix {
+    val rows: Int
+    val cols: Int
+    val data: CharArray
+    val xRange: IntRange
+    val yRange: IntRange
+
+    private constructor(rows: Int, cols: Int, data: CharArray) {
+        this.rows = rows
+        this.cols = cols
+        this.data = data
+        xRange = 0..<cols
+        yRange = 0..<rows
+    }
+
+    constructor(rows: Int, cols: Int, init: (Int, Int) -> Char) {
+        this.rows = rows
+        this.cols = cols
+        data = CharArray(rows * cols) { index -> init(index % cols, index / cols) }
+        xRange = 0..<cols
+        yRange = 0..<rows
+    }
+
+    constructor(data: Array<CharArray>) {
+        rows = data.size
+        cols = data[0].size
+        this.data = CharArray(rows * cols) { index -> data[index / cols][index % cols] }
+        xRange = 0..<cols
+        yRange = 0..<rows
+    }
 
     fun checkBounds(x: Int, y: Int): Boolean {
         return x in xRange && y in yRange
     }
 
     fun checkBounds(v: IntVec2): Boolean {
-        return v.x in xRange && v.y in yRange
+        return checkBounds(v.x, v.y)
+    }
+
+    fun index(x: Int, y: Int): Int {
+        return y * cols + x
     }
 
     operator fun get(x: Int, y: Int): Char {
-        return data[y][x]
+        return data[index(x, y)]
     }
 
     operator fun get(v: IntVec2): Char {
-        return data[v.y][v.x]
+        return get(v.x, v.y)
     }
 
     operator fun set(x: Int, y: Int, value: Char) {
-        data[y][x] = value
+        data[index(x, y)] = value
     }
 
     operator fun set(v: IntVec2, value: Char) {
-        data[v.y][v.x] = value
+        set(v.x, v.y, value)
     }
 
     fun withXY(): Sequence<XYValue> {
         return sequence {
             for (y in yRange) {
                 for (x in xRange) {
-                    yield(XYValue(IntVec2(x, y), data[y][x]))
+                    yield(XYValue(IntVec2(x, y), get(x, y)))
                 }
             }
         }
     }
 
-    fun flatten(): Sequence<Char> {
-        return sequence {
-            for (y in yRange) {
-                for (x in xRange) {
-                    yield(data[y][x])
-                }
-            }
-        }
+    fun scale(factor: Int): CharMatrix {
+        require(factor > 1)
+        val newRows = rows * factor
+        val newCols = cols * factor
+        return CharMatrix(newRows, newCols) { x, y -> get(x / factor, y / factor) }
     }
 
     fun copy(): CharMatrix {
-        return CharMatrix(Array(rows) { y -> data[y].copyOf() })
+        return CharMatrix(rows, cols, data.copyOf())
     }
 
     data class XYValue(val xy: IntVec2, val value: Char)
 }
 
-class IntMatrix(val data: Array<IntArray>) {
-    val rows = data.size
-    val cols = data[0].size
-    val xRange = 0 until cols
-    val yRange = 0 until rows
+class IntMatrix {
+    val rows: Int
+    val cols: Int
+    val data: IntArray
+    val xRange: IntRange
+    val yRange: IntRange
 
-    constructor(rows: Int, cols: Int) : this(Array(rows) { IntArray(cols) })
-    constructor(rows: Int, cols: Int, init: (Int, Int) -> Int) : this(Array(rows) { y -> IntArray(cols) { x -> init(x, y) } })
+    private constructor(rows: Int, cols: Int, data: IntArray) {
+        this.rows = rows
+        this.cols = cols
+        this.data = data
+        xRange = 0..<cols
+        yRange = 0..<rows
+    }
+
+    constructor(rows: Int, cols: Int, init: (Int, Int) -> Int) {
+        this.rows = rows
+        this.cols = cols
+        data = IntArray(rows * cols) { index -> init(index % cols, index / cols) }
+        xRange = 0..<cols
+        yRange = 0..<rows
+    }
+
+    constructor(rows: Int, cols: Int) {
+        this.rows = rows
+        this.cols = cols
+        data = IntArray(rows * cols)
+        xRange = 0..<cols
+        yRange = 0..<rows
+    }
 
     fun checkBounds(x: Int, y: Int): Boolean {
         return x in xRange && y in yRange
     }
 
     fun checkBounds(v: IntVec2): Boolean {
-        return v.x in xRange && v.y in yRange
+        return checkBounds(v.x, v.y)
+    }
+
+    fun index(x: Int, y: Int): Int {
+        return y * cols + x
     }
 
     operator fun get(x: Int, y: Int): Int {
-        return data[y][x]
+        return data[index(x, y)]
     }
 
     operator fun get(v: IntVec2): Int {
-        return data[v.y][v.x]
+        return get(v.x, v.y)
     }
 
     operator fun set(x: Int, y: Int, value: Int) {
-        data[y][x] = value
+        data[index(x, y)] = value
     }
 
     operator fun set(v: IntVec2, value: Int) {
-        data[v.y][v.x] = value
+        set(v.x, v.y, value)
+    }
+
+    fun xy(): Sequence<IntVec2> {
+        return sequence {
+            for (y in yRange) {
+                for (x in xRange) {
+                    yield(IntVec2(x, y))
+                }
+            }
+        }
     }
 
     fun withXY(): Sequence<XYValue> {
         return sequence {
             for (y in yRange) {
                 for (x in xRange) {
-                    yield(XYValue(IntVec2(x, y), data[y][x]))
+                    yield(XYValue(IntVec2(x, y), get(x, y)))
                 }
             }
         }
     }
 
-    fun flatten(): Sequence<Int> {
-        return sequence {
-            for (y in yRange) {
-                for (x in xRange) {
-                    yield(data[y][x])
-                }
-            }
-        }
+    fun scale(factor: Int): IntMatrix {
+        require(factor > 1)
+        val newRows = rows * factor
+        val newCols = cols * factor
+        return IntMatrix(newRows, newCols) { x, y -> get(x / factor, y / factor) }
     }
 
     fun copy(): IntMatrix {
-        return IntMatrix(Array(rows) { y -> data[y].copyOf() })
+        return IntMatrix(rows, cols, data.copyOf())
     }
 
     data class XYValue(val xy: IntVec2, val value: Int)

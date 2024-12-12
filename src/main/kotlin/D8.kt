@@ -20,7 +20,7 @@ fun main() {
                 }
         }
 
-        val count = antinodes.flatten().sum()
+        val count = antinodes.data.sum()
         println("Part 1:")
         println(count)
     }
@@ -41,7 +41,7 @@ fun main() {
                 }
         }
 
-        val count = antinodes.flatten().sum()
+        val count = antinodes.data.sum()
         println("Part 2:")
         println(count)
     }
