@@ -231,9 +231,58 @@ data class IntVec2(val x: Int, val y: Int) {
     operator fun div(other: IntVec2) = IntVec2(x / other.x, y / other.y)
     operator fun unaryMinus() = IntVec2(-x, -y)
     fun manhattan() = abs(x) + abs(y)
+
+    fun toLongVec2() = LongVec2(x.toLong(), y.toLong())
 }
 
-fun Int.plus(other: IntVec2) = IntVec2(this + other.x, this + other.y)
-fun Int.minus(other: IntVec2) = IntVec2(this - other.x, this - other.y)
-fun Int.times(other: IntVec2) = IntVec2(this * other.x, this * other.y)
-fun Int.div(other: IntVec2) = IntVec2(this / other.x, this / other.y)
+operator fun Int.plus(other: IntVec2) = IntVec2(this + other.x, this + other.y)
+operator fun Int.minus(other: IntVec2) = IntVec2(this - other.x, this - other.y)
+operator fun Int.times(other: IntVec2) = IntVec2(this * other.x, this * other.y)
+operator fun Int.div(other: IntVec2) = IntVec2(this / other.x, this / other.y)
+
+data class LongVec2(val x: Long, val y: Long) {
+    operator fun plus(other: LongVec2) = LongVec2(x + other.x, y + other.y)
+    operator fun plus(other: Long) = LongVec2(x + other, y + other)
+    operator fun minus(other: LongVec2) = LongVec2(x - other.x, y - other.y)
+    operator fun minus(other: Long) = LongVec2(x - other, y - other)
+    operator fun times(scalar: Long) = LongVec2(x * scalar, y * scalar)
+    operator fun times(other: LongVec2) = LongVec2(x * other.x, y * other.y)
+    operator fun div(scalar: Long) = LongVec2(x / scalar, y / scalar)
+    operator fun div(other: LongVec2) = LongVec2(x / other.x, y / other.y)
+    operator fun unaryMinus() = LongVec2(-x, -y)
+    fun manhattan() = abs(x) + abs(y)
+
+    fun toIntVec2() = IntVec2(x.toInt(), y.toInt())
+}
+
+operator fun Long.plus(other: LongVec2) = LongVec2(this + other.x, this + other.y)
+operator fun Long.minus(other: LongVec2) = LongVec2(this - other.x, this - other.y)
+operator fun Long.times(other: LongVec2) = LongVec2(this * other.x, this * other.y)
+operator fun Long.div(other: LongVec2) = LongVec2(this / other.x, this / other.y)
+
+fun gcd(a: Int, b: Int): Int {
+    if (b == 0) return a
+    return gcd(b, a % b)
+}
+
+fun gcd(a: Long, b: Long): Long {
+    if (b == 0L) return a
+    return gcd(b, a % b)
+}
+
+fun lcm(a: Int, b: Int): Int {
+    return if (a == 0 || b == 0) {
+        0
+    } else {
+        (a * b) / gcd(a, b)
+    }
+}
+
+fun lcm(a: Long, b: Long): Long {
+    return if (a == 0L || b == 0L) {
+        0L
+    } else {
+        (a * b) / gcd(a, b)
+    }
+}
+
