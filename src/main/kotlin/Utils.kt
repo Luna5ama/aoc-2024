@@ -32,6 +32,14 @@ class CharMatrix {
         yRange = 0..<rows
     }
 
+    constructor(rows: Int, cols: Int) {
+        this.rows = rows
+        this.cols = cols
+        data = CharArray(rows * cols)
+        xRange = 0..<cols
+        yRange = 0..<rows
+    }
+
     constructor(rows: Int, cols: Int, init: (Int, Int) -> Char) {
         this.rows = rows
         this.cols = cols
@@ -95,6 +103,24 @@ class CharMatrix {
 
     fun copy(): CharMatrix {
         return CharMatrix(rows, cols, data.copyOf())
+    }
+
+    inline fun print(mapper: (Char) -> Char) {
+        for (y in yRange) {
+            for (x in xRange) {
+                print(mapper(this[x, y]))
+            }
+            println()
+        }
+    }
+
+    fun print() {
+        for (y in yRange) {
+            for (x in xRange) {
+                print(this[x, y])
+            }
+            println()
+        }
     }
 
     data class XYValue(val xy: IntVec2, val value: Char)
@@ -194,10 +220,13 @@ class IntMatrix {
 }
 
 fun String.toCharMatrix(): CharMatrix {
-    val lines = lines()
-    val rows = lines.size
-    val cols = lines[0].length
-    return CharMatrix(Array(rows) { y -> CharArray(cols) { x -> lines[y][x] } })
+    return lines().toCharMatrix()
+}
+
+fun List<String>.toCharMatrix(): CharMatrix {
+    val rows = this.size
+    val cols = this[0].length
+    return CharMatrix(Array(rows) { y -> CharArray(cols) { x -> this[y][x] } })
 }
 
 fun <T> List<T>.cartesianProduct(n: Int): Sequence<List<T>> {
@@ -234,6 +263,8 @@ data class IntVec2(val x: Int, val y: Int) {
 
     fun toLongVec2() = LongVec2(x.toLong(), y.toLong())
 }
+
+operator fun IntVec2.plus(other: Direction4) = this + other.vec
 
 operator fun Int.plus(other: IntVec2) = IntVec2(this + other.x, this + other.y)
 operator fun Int.minus(other: IntVec2) = IntVec2(this - other.x, this - other.y)

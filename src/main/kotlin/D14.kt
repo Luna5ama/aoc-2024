@@ -54,7 +54,7 @@ fun main() {
             robots.forEach {
                 image.setRGB(it.px, it.py, -1)
             }
-            ImageIO.write(image, "png", File("G:\\temp\\d14\\$it.png"))
+            ImageIO.write(image, "png", File("K:\\xd\\$it.png"))
 
             robots.forEach { robot ->
                 robot.px += robot.vx
