@@ -15,5 +15,5 @@ repositories {
 
 dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
-    implementation("it.unimi.dsi:fastutil:8.5.15")
+    implementation("it.unimi.dsi:fastutil:8.5.12")
 }
