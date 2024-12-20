@@ -217,6 +217,24 @@ class IntMatrix {
         return IntMatrix(rows, cols, data.copyOf())
     }
 
+    inline fun print(mapper: (Int) -> Char) {
+        for (y in yRange) {
+            for (x in xRange) {
+                print(mapper(this[x, y]))
+            }
+            println()
+        }
+    }
+
+    fun print() {
+        for (y in yRange) {
+            for (x in xRange) {
+                print(this[x, y])
+            }
+            println()
+        }
+    }
+
     data class XYValue(val xy: IntVec2, val value: Int)
 }
 
@@ -263,6 +281,12 @@ data class IntVec2(val x: Int, val y: Int) {
     fun manhattan() = abs(x) + abs(y)
 
     fun toLongVec2() = LongVec2(x.toLong(), y.toLong())
+
+    fun pack() = (x.toLong() shl 32) or y.toLong()
+}
+
+fun Long.unpack(): IntVec2 {
+    return IntVec2((this shr 32).toInt(), this.toInt())
 }
 
 operator fun IntVec2.plus(other: Direction4) = this + other.vec
