@@ -15,6 +15,7 @@ enum class Direction4(val dx: Int, val dy: Int, val oppositeIndex: Int, val bitM
     val opposite get() = entries[oppositeIndex]
     val right get() = entries[(ordinal + 1) % 4]
     val left get() = entries[(ordinal + 3) % 4]
+    val back get() = entries[(ordinal + 2) % 4]
 }
 
 class CharMatrix {
