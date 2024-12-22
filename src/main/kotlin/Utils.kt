@@ -95,6 +95,17 @@ class CharMatrix {
         }
     }
 
+    fun xy(): Sequence<IntVec2> {
+        return sequence {
+            for (y in yRange) {
+                for (x in xRange) {
+                    yield(IntVec2(x, y))
+                }
+            }
+        }
+    }
+
+
     fun scale(factor: Int): CharMatrix {
         require(factor > 1)
         val newRows = rows * factor
@@ -290,6 +301,7 @@ fun Long.unpack(): IntVec2 {
 }
 
 operator fun IntVec2.plus(other: Direction4) = this + other.vec
+operator fun IntVec2.minus(other: Direction4) = this - other.vec
 
 operator fun Int.plus(other: IntVec2) = IntVec2(this + other.x, this + other.y)
 operator fun Int.minus(other: IntVec2) = IntVec2(this - other.x, this - other.y)
