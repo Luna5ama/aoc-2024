@@ -13,13 +13,13 @@ fun main() {
     val inputStart = input.withXY().find { it.value == 'S' }!!.xy
     val inputEnd = input.withXY().find { it.value == 'E' }!!.xy
 
-    fun bfs(grid: IntMatrix, startPos: IntVec2, maxStep: Int = Int.MAX_VALUE) {
+    fun bfs(grid: IntMatrix, startPos: IntVec2) {
         grid[startPos] = 0
         var posList = ObjectArrayList<IntVec2>()
         var nextPosList = ObjectArrayList<IntVec2>()
         posList.add(startPos)
         var step = 1
-        while (posList.isNotEmpty() && step <= maxStep) {
+        while (posList.isNotEmpty()) {
             for (i in 0..<posList.size) {
                 val it = posList[i]
                 for (dir in Direction4.entries) {
@@ -60,12 +60,8 @@ fun main() {
                     }
                 }
             }
-            .map {
-                fromStart[it.first] + fromEnd[it.second] + range
-            }
-            .map {
-                fromStart[inputEnd] - it
-            }
+            .map { fromStart[it.first] + fromEnd[it.second] + range }
+            .map { fromStart[inputEnd] - it }
             .filter { it > 0 }
     }
 

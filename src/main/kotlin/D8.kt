@@ -9,7 +9,7 @@ fun main() {
         val antinodes = IntMatrix(input.rows, input.cols)
 
         antennas.values.forEach { list ->
-            list.cartesianProduct(2)
+            list.permutation(2)
                 .forEach inner@{ (a, b) ->
                     if (b == a) return@inner
                     val diff = b - a
@@ -29,7 +29,7 @@ fun main() {
         val antinodes = IntMatrix(input.rows, input.cols)
 
         antennas.values.forEach { list ->
-            list.cartesianProduct(2)
+            list.permutation(2)
                 .forEach inner@{ (a, b) ->
                     if (b == a) return@inner
                     val diff = b - a

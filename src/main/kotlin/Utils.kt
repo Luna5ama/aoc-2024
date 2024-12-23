@@ -18,6 +18,21 @@ enum class Direction4(val dx: Int, val dy: Int, val oppositeIndex: Int, val bitM
     val back get() = entries[(ordinal + 2) % 4]
 }
 
+fun Char.arrowToDir() = when (this) {
+    '^' -> Direction4.UP
+    '>' -> Direction4.RIGHT
+    'v' -> Direction4.DOWN
+    '<' -> Direction4.LEFT
+    else -> error("Unknown arrow: $this")
+}
+
+fun Direction4.toArrowChar() = when (this) {
+    Direction4.UP -> '^'
+    Direction4.RIGHT -> '>'
+    Direction4.DOWN -> 'v'
+    Direction4.LEFT -> '<'
+}
+
 class CharMatrix {
     val rows: Int
     val cols: Int
@@ -259,14 +274,14 @@ fun List<String>.toCharMatrix(): CharMatrix {
     return CharMatrix(Array(rows) { y -> CharArray(cols) { x -> this[y][x] } })
 }
 
-fun <T> List<T>.cartesianProduct(n: Int): Sequence<List<T>> {
+fun <T> List<T>.permutation(n: Int): Sequence<List<T>> {
     return if (n == 0) {
         sequenceOf(emptyList())
     } else {
         val indices = IntArray(n)
         sequence {
             while (true) {
-                yield(indices.map { this@cartesianProduct[it] })
+                yield(indices.map { this@permutation[it] })
                 var i = 0
                 while (i < n && indices[i] == size - 1) {
                     indices[i] = 0
